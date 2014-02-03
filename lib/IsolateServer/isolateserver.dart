@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 
 part 'src/request.dart';
+part 'src/tempfile.dart';
 part 'src/datamanager.dart';
 
 class IsolateServer {
