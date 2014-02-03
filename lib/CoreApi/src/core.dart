@@ -20,7 +20,7 @@ class Core {
         userInfo = data["USER_INFO"];
       }
       catch (e) {
-        print(e);
+        print("Erreur: ${e}");
       }
     }
   }

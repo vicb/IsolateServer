@@ -1,6 +1,6 @@
 import 'dart:isolate';
 
-import 'package:IsolateServer/CoreApi/all.dart';
+import 'package:IsolateServer/CoreApi/coreapi.dart';
 
 void main(List<String> args, SendPort replyTo) {
   Core rtc = new Core(args[0]);

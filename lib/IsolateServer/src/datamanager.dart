@@ -1,10 +1,6 @@
 part of IsolateServer;
 
-abstract class DataFile {
-  void update(IO.HttpRequest req, IO.HttpServer hs, Request data);
-}
-
-class TempFile extends DataFile {
+class TempFile {
   String pathFile;
   
   TempFile(String dirPath) {
@@ -49,13 +45,11 @@ class TempFile extends DataFile {
     }
     dataTmpFile["REQUEST"] = requestInfo;
 
-    IO.IOSink ios = tmpFile.openWrite(mode: IO.WRITE);
-    ios.write(JSON.encode(dataTmpFile));
-    ios.close();
+    tmpFile.writeAsStringSync(JSON.encode(dataTmpFile), mode: IO.WRITE);
   }
 }
 
-class StaticFile extends DataFile {
+class StaticFile {
   StaticFile(String dirPath) {
     
   }
@@ -67,19 +61,16 @@ class StaticFile extends DataFile {
 
 class DataManager {
   IO.Directory            sessDir;
-  List<DataFile>          sessionFile;
+  TempFile                tmpFile;
   
   DataManager(IO.HttpRequest req, IO.HttpServer hs, Request data) {
-    sessionFile = new List<DataFile>();
     sessDir = new IO.Directory("data/${req.session.id}/");
     req.session.onTimeout = _deleteDir;
     if (!sessDir.existsSync()) {
       sessDir.createSync();
     }
-    if (sessionFile.length == 0) {
-      sessionFile.add(new StaticFile(sessDir.path));
-      sessionFile.add(new TempFile(sessDir.path));
-    }
+    if (tmpFile == null)
+      tmpFile = new TempFile(sessDir.path);
     update(req, hs, data);
   }
   
@@ -89,8 +80,6 @@ class DataManager {
   }
   
   void update(IO.HttpRequest req, IO.HttpServer hs, Request data) {
-    sessionFile.forEach((DataFile sf) {
-      sf.update(req, hs, data);
-    });
+    tmpFile.update(req, hs, data);
   }
 }
