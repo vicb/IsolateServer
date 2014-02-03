@@ -27,7 +27,7 @@ class IsolateServer {
   void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, Request request) {
     try {
       DataManager dataManager = new DataManager(req, hs, request);
-      var response = new ReceivePort();
+      ReceivePort response = new ReceivePort();
       Isolate.spawnUri(Uri.parse("../" + path), [req.session.id], response.sendPort);
       response.listen((data) {
         Map mapData = JSON.decode(data);

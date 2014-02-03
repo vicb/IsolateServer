@@ -1,15 +1,5 @@
 part of IsolateServer;
 
-class StaticFile {
-  StaticFile(String dirPath) {
-    
-  }
-  
-  void update(IO.HttpRequest req, IO.HttpServer hs, Request data) {
-
-  }
-}
-
 class DataManager {
   IO.Directory            sessDir;
   TempFile                tmpFile;
