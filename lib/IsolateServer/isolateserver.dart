@@ -5,6 +5,7 @@ import 'dart:isolate';
 import 'dart:async';
 import 'dart:convert';
 
+part 'src/request.dart';
 part 'src/datamanager.dart';
 
 class IsolateServer {
@@ -29,12 +30,15 @@ class IsolateServer {
       print("time before call script: ${sw.elapsed}");
       Isolate.spawnUri(Uri.parse("../" + path), [req.session.id], response.sendPort);
       response.listen((data) {
-        print(data);
         Map mapData = JSON.decode(data);
         if (mapData["REDIRECTION"] == "")
           req.response.write(mapData["DOM"]);
         else
           req.response.headers.set("Refresh", "0; url=${mapData["REDIRECTION"]}");
+        Map session = mapData["SESSION"];
+        session.forEach((dynamic key, dynamic value) {
+          req.session[key] = value;
+        });
         req.response.close();
         this._stopAndPrintStopwatch(sw, req);
       });
@@ -67,9 +71,6 @@ class IsolateServer {
   
   void _getData(IO.HttpRequest req, List<int> data, Stopwatch sw) {
     Request request = new Request(req.method, data, req.requestedUri.queryParameters);
-    print("=== data ===");
-    print(request.data);
-    print("============");
     String pathFile = this._getPathFile(req);
     IO.File file = new IO.File(pathFile);
     if (file.existsSync())

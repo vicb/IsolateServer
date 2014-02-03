@@ -3,9 +3,8 @@ import 'dart:isolate';
 import 'package:IsolateServer/CoreApi/all.dart';
 
 void main(List<String> args, SendPort replyTo) {
-  print(args);
-  ReturnToCore rtc = new ReturnToCore();
-
+  Core rtc = new Core(args[0]);
+  
   Element container = new Element.tag('div');
   Element form = new Element.tag('form');
   form["action"] = "/";

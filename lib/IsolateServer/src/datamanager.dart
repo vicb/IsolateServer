@@ -1,17 +1,7 @@
 part of IsolateServer;
 
-class Request {
-  String        type;
-  List<int>     data;
-  Map           queryParam;
-  
-  Request(String this.type, List<int> this.data, Map this.queryParam);
-}
-
 abstract class DataFile {
-  void update(IO.HttpRequest req, IO.HttpServer hs, Request data) {
-    print("session file update");
-  }
+  void update(IO.HttpRequest req, IO.HttpServer hs, Request data);
 }
 
 class TempFile extends DataFile {
@@ -22,7 +12,6 @@ class TempFile extends DataFile {
   }
   
   void update(IO.HttpRequest req, IO.HttpServer hs, Request data) {
-    print("START TMP FILE");
     IO.File tmpFile = new IO.File(pathFile);
     if (!tmpFile.existsSync())
       tmpFile.createSync();
@@ -72,7 +61,7 @@ class StaticFile extends DataFile {
   }
   
   void update(IO.HttpRequest req, IO.HttpServer hs, Request data) {
-    print("START STATIC FILE");
+
   }
 }
 
@@ -85,7 +74,6 @@ class DataManager {
     sessDir = new IO.Directory("data/${req.session.id}/");
     req.session.onTimeout = _deleteDir;
     if (!sessDir.existsSync()) {
-      print("dir does not exist! created");
       sessDir.createSync();
     }
     if (sessionFile.length == 0) {
