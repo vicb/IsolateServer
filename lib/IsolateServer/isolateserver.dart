@@ -36,9 +36,11 @@ class IsolateServer {
         else
           req.response.headers.set("Refresh", "0; url=${mapData["REDIRECTION"]}");
         Map session = mapData["SESSION"];
-        session.forEach((dynamic key, dynamic value) {
-          req.session[key] = value;
-        });
+        if (session != null) {
+          session.forEach((dynamic key, dynamic value) {
+            req.session[key] = value;
+          });
+        }
         req.response.close();
         this._stopAndPrintStopwatch(sw, req);
       });
