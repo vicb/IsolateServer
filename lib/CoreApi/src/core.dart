@@ -11,9 +11,8 @@ class Core {
     dom = new Dom();
     redir = new Redirection();
     try {
-      Map data = JSON.decode(args[1]);
+      Map data = JSON.decode(args[0]);
       session = data["SESSION"];
-      session["id"] = args[0];
       request = data["REQUEST"];
       userInfo = data["USER_INFO"];
     }

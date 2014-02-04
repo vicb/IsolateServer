@@ -4,7 +4,10 @@ import 'package:IsolateServer/CoreApi/coreapi.dart';
 
 void main(List<String> args, SendPort replyTo) {
   Core rtc = new Core(args);
-
+  
+  print(rtc.userInfo);
+  print(rtc.session);
+  print(rtc.request);
   
   Element container = new Element.tag('div');
   Element form = new Element.tag('form');

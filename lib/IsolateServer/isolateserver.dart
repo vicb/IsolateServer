@@ -23,11 +23,12 @@ class IsolateServer {
     print("Response time for ${req.uri.path}: ${sw.elapsed}");
   }
   
-  void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, Request request) {
+  void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, List<int> data) {
     try {
-      ServerData serverData = new ServerData();
+      Request request = new Request(req.method, new String.fromCharCodes(data), req.uri.queryParameters);
+      ServerData serverData = new ServerData(req.session.id, req);
       ReceivePort response = new ReceivePort();
-      Isolate.spawnUri(Uri.parse("../" + path), [req.session.id, serverData.getServerData(req, hs, request)], response.sendPort);
+      Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, hs, request)], response.sendPort);      
       response.listen((data) {
         Map mapData = JSON.decode(data);
         if (mapData["REDIRECTION"] == "")
@@ -45,24 +46,24 @@ class IsolateServer {
       });
     }
     catch (e) {
-      this._fileNotExist(req, sw, request);
+      this._fileNotExist(req, sw, data);
     }
   }
   
-  void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, Request request) {
+  void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, List<int> data) {
     String pathFile = file.path;
     if (pathFile.endsWith(".dart"))
-      this._spawnDart(req, pathFile, sw, request);
+      this._spawnDart(req, pathFile, sw, data);
     else {
       file.openRead().pipe(req.response).catchError((e) { print('error pipe!'); });
       this._stopAndPrintStopwatch(sw, req);
     }
   }
   
-  void _fileNotExist(IO.HttpRequest req, Stopwatch sw, Request request) {
+  void _fileNotExist(IO.HttpRequest req, Stopwatch sw, List<int> data) {
     IO.File error = new IO.File("web/error/404.dart");
-    if (error.existsSync())
-      this._spawnDart(req, "../web/error/404.dart", sw, request);
+    if (error.existsSync()) 
+      this._spawnDart(req, "../web/error/404.dart", sw, data);
     else {
       req.response.write("NOT FOUND !");
       req.response.close();
@@ -71,13 +72,12 @@ class IsolateServer {
   }
   
   void _getData(IO.HttpRequest req, List<int> data, Stopwatch sw) {
-    Request request = new Request(req.method, data, req.requestedUri.queryParameters);
     String pathFile = this._getPathFile(req);
     IO.File file = new IO.File(pathFile);
     if (file.existsSync())
-      this._fileExist(req, file, sw, request);
+      this._fileExist(req, file, sw, data);
     else
-      this._fileNotExist(req, sw, request);
+      this._fileNotExist(req, sw, data);
   }
   
   String _getPathFile(IO.HttpRequest req) {
@@ -94,7 +94,7 @@ class IsolateServer {
       Stopwatch sw = new Stopwatch();
       sw.start();
       List<int> allData = new List<int>();
-      req.listen((List<int> data) => allData.addAll(data), onDone: () {
+      req.listen((data) => allData.addAll(data), onDone: () {
         _getData(req, allData, sw);
       }, onError: (e) {
         print(e);
