@@ -1,13 +1,5 @@
 part of IsolateServer;
 
-class ManageServerData {
-  Map     ServerDatas;
-  
-  ManageServerData() {
-    
-  }
-}
-
 class ServerData {
   final String  id;
   
@@ -41,28 +33,28 @@ class ServerData {
     dataTmpFile["REQUEST"] = requestInfo;
   }
     
-  String getServerData(IO.HttpRequest req, IO.HttpServer hs, Request request) {
+  String getServerData(IO.HttpRequest req, IO.HttpServer hs, String data) {
     Map session = dataTmpFile["SESSION"];
     req.session.forEach((dynamic key, dynamic value) {
       session[key] = value;
     });
     
     Map requestInfo = dataTmpFile["REQUEST"];
-    requestInfo["TYPE"] = request.type;
+    requestInfo["TYPE"] = req.method;
     Map queryParameter = new Map<String, String>();
-    request.queryParam.forEach((key, value) {
+    req.uri.queryParameters.forEach((key, value) {
       queryParameter[key] = value;
     });
     requestInfo["QUERYPARAM"] = queryParameter; 
-    if (request.type == "POST") {
+    if (req.method == "POST") {
       Map postData = new Map<String, String>();
-      List<String> listData = request.data.split("=");
+      List<String> listData = data.split("=");
       if (listData.length == 2) {
         for (int i = 0; i < listData.length; i += 2)
           postData[listData[i]] = Uri.decodeQueryComponent(listData[i + 1]);
       }
       else
-        postData["DEFAULT"] = request.data;
+        postData["DEFAULT"] = data;
       requestInfo["DATA"] = postData;
     }
 

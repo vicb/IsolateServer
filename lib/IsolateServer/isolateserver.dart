@@ -5,7 +5,6 @@ import 'dart:isolate';
 import 'dart:async';
 import 'dart:convert';
 
-part 'src/request.dart';
 part 'src/serverdata.dart';
 
 class IsolateServer {
@@ -23,12 +22,11 @@ class IsolateServer {
     print("Response time for ${req.uri.path}: ${sw.elapsed}");
   }
   
-  void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, List<int> data) {
+  void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, String data) {
     try {
-      Request request = new Request(req.method, new String.fromCharCodes(data), req.uri.queryParameters);
       ServerData serverData = new ServerData(req.session.id, req);
       ReceivePort response = new ReceivePort();
-      Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, hs, request)], response.sendPort);      
+      Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, hs, data)], response.sendPort);      
       response.listen((data) {
         Map mapData = JSON.decode(data);
         if (mapData["REDIRECTION"] == "")
@@ -50,7 +48,7 @@ class IsolateServer {
     }
   }
   
-  void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, List<int> data) {
+  void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, String data) {
     String pathFile = file.path;
     if (pathFile.endsWith(".dart"))
       this._spawnDart(req, pathFile, sw, data);
@@ -60,7 +58,7 @@ class IsolateServer {
     }
   }
   
-  void _fileNotExist(IO.HttpRequest req, Stopwatch sw, List<int> data) {
+  void _fileNotExist(IO.HttpRequest req, Stopwatch sw, String data) {
     IO.File error = new IO.File("web/error/404.dart");
     if (error.existsSync()) 
       this._spawnDart(req, "../web/error/404.dart", sw, data);
@@ -71,7 +69,7 @@ class IsolateServer {
     }
   }
   
-  void _getData(IO.HttpRequest req, List<int> data, Stopwatch sw) {
+  void _getData(IO.HttpRequest req, String data, Stopwatch sw) {
     String pathFile = this._getPathFile(req);
     IO.File file = new IO.File(pathFile);
     if (file.existsSync())
@@ -93,12 +91,11 @@ class IsolateServer {
     this.hs.listen((IO.HttpRequest req) {
       Stopwatch sw = new Stopwatch();
       sw.start();
-      List<int> allData = new List<int>();
-      req.listen((data) => allData.addAll(data), onDone: () {
-        _getData(req, allData, sw);
+      UTF8.decodeStream(req).then((String data) {
+        _getData(req, data, sw);
       }, onError: (e) {
         print(e);
-      }, cancelOnError: true);
+      });      
     });
   }
 }
