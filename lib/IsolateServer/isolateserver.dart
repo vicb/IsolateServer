@@ -6,8 +6,7 @@ import 'dart:async';
 import 'dart:convert';
 
 part 'src/request.dart';
-part 'src/tempfile.dart';
-part 'src/datamanager.dart';
+part 'src/serverdata.dart';
 
 class IsolateServer {
   IO.HttpServer           hs;
@@ -26,9 +25,9 @@ class IsolateServer {
   
   void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, Request request) {
     try {
-      DataManager dataManager = new DataManager(req, hs, request);
+      ServerData serverData = new ServerData();
       ReceivePort response = new ReceivePort();
-      Isolate.spawnUri(Uri.parse("../" + path), [req.session.id], response.sendPort);
+      Isolate.spawnUri(Uri.parse("../" + path), [req.session.id, serverData.getServerData(req, hs, request)], response.sendPort);
       response.listen((data) {
         Map mapData = JSON.decode(data);
         if (mapData["REDIRECTION"] == "")

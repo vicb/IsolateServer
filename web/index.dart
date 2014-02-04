@@ -3,7 +3,8 @@ import 'dart:isolate';
 import 'package:IsolateServer/CoreApi/coreapi.dart';
 
 void main(List<String> args, SendPort replyTo) {
-  Core rtc = new Core(args[0]);
+  Core rtc = new Core(args);
+
   
   Element container = new Element.tag('div');
   Element form = new Element.tag('form');

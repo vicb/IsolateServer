@@ -7,21 +7,18 @@ class Core {
   Map             request;
   Map             userInfo;
 
-  Core(String arg) {
+  Core(List<String> args) {
     dom = new Dom();
     redir = new Redirection();
-    IO.File sessDir = new IO.File("data/${arg}/tmp");
-    if (sessDir.existsSync()) {
-      List<String> lData = sessDir.readAsLinesSync();
-      try {
-        Map data = JSON.decode(lData[0]);
-        session = data["SESSION"];
-        request = data["REQUEST"];
-        userInfo = data["USER_INFO"];
-      }
-      catch (e) {
-        print("Erreur: ${e}");
-      }
+    try {
+      Map data = JSON.decode(args[1]);
+      session = data["SESSION"];
+      session["id"] = args[0];
+      request = data["REQUEST"];
+      userInfo = data["USER_INFO"];
+    }
+    catch (e) {
+      print("Erreur: ${e}");
     }
   }
   
