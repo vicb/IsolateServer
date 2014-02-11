@@ -14,10 +14,27 @@ class Dom {
   }
   
   void setTitle(String title) {
-    
+    Element eTitle = new Element.tag('title');
+    eTitle.innerText = title;
+    head.appendChild(eTitle);
   }
   
-  void addToBody(Element child) {
+  void addScriptToHead(String src, String type) {
+    Element script = new Element.tag('script');
+    script["src"] = src;
+    script["type"] = type;
+    head.appendChild(script);
+  }
+  
+  void addStyleSheetToHead(String href) {
+    Element ss = new Element.tag('link');
+    ss["rel"] = "stylesheet";
+    ss["type"] = "text/css";
+    ss["href"] = href;
+    head.appendChild(ss);
+  }
+  
+  void appendToBody(Element child) {
     body.appendChild(child); 
   }
   

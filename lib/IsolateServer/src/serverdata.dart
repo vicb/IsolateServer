@@ -1,8 +1,6 @@
 part of IsolateServer;
 
 class ServerData {
-  final String  id;
-  
   Map dataTmpFile;
   
   static final Map<String, ServerData> cache = new Map<String, ServerData>();
@@ -11,13 +9,13 @@ class ServerData {
     if (cache.containsKey(id))
       return (cache[id]);
     else {
-      final ServerData serverData = new ServerData.internal(id, req);    
+      final ServerData serverData = new ServerData.internal(req);    
       cache[id] = serverData;
       return (serverData);
     }
   }
   
-  ServerData.internal(String this.id, IO.HttpRequest req) {
+  ServerData.internal(IO.HttpRequest req) {
     dataTmpFile = new Map<String, dynamic>();
     Map userInfo = new Map<dynamic, dynamic>();
     userInfo["REMOTE_ADDRESS"] = req.connectionInfo.remoteAddress.address;
@@ -57,7 +55,6 @@ class ServerData {
         postData["DEFAULT"] = data;
       requestInfo["DATA"] = postData;
     }
-
     return (JSON.encode(dataTmpFile));
   }
 }

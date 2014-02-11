@@ -50,7 +50,12 @@ class IsolateServer {
   
   void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, String data) {
     String pathFile = file.path;
-    if (pathFile.endsWith(".dart"))
+    bool isServerFile = true;
+    file.readAsLinesSync().forEach((String line) {
+      if (line.contains("import 'dart:html'") || line.contains('import "dart:html"'))
+        isServerFile = false;
+    });
+    if (pathFile.endsWith(".dart") && isServerFile)
       this._spawnDart(req, pathFile, sw, data);
     else {
       file.openRead().pipe(req.response).catchError((e) { print('error pipe!'); });
@@ -63,6 +68,7 @@ class IsolateServer {
     if (error.existsSync()) 
       this._spawnDart(req, "../web/error/404.dart", sw, data);
     else {
+      req.response.statusCode = IO.HttpStatus.NOT_FOUND;
       req.response.write("NOT FOUND !");
       req.response.close();
       this._stopAndPrintStopwatch(sw, req);
@@ -83,7 +89,7 @@ class IsolateServer {
     if (req.uri.path.endsWith("/"))
       pathFile += req.uri.path + "index.dart";
     else
-      pathFile = req.uri.path;
+      pathFile += req.uri.path;
     return (pathFile);
   }
   
