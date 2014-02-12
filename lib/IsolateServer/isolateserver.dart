@@ -2,7 +2,6 @@ library IsolateServer;
 
 import 'dart:io' as IO;
 import 'dart:isolate';
-import 'dart:async';
 import 'dart:convert';
 
 part 'src/serverdata.dart';
@@ -50,12 +49,7 @@ class IsolateServer {
   
   void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, String data) {
     String pathFile = file.path;
-    bool isServerFile = true;
-    file.readAsLinesSync().forEach((String line) {
-      if (line.contains("import 'dart:html'") || line.contains('import "dart:html"'))
-        isServerFile = false;
-    });
-    if (pathFile.endsWith(".dart") && isServerFile)
+    if (pathFile.endsWith(".dart"))
       this._spawnDart(req, pathFile, sw, data);
     else {
       file.openRead().pipe(req.response).catchError((e) { print('error pipe!'); });
@@ -87,7 +81,9 @@ class IsolateServer {
   String _getPathFile(IO.HttpRequest req) {
     String pathFile = "web";
     if (req.uri.path.endsWith("/"))
-      pathFile += req.uri.path + "index.dart";
+      pathFile += req.uri.path + "server/" + "index.dart";
+    else if (!req.uri.path.contains("/client/"))
+      pathFile += "/server" + req.uri.path; 
     else
       pathFile += req.uri.path;
     return (pathFile);
