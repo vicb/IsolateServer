@@ -26,6 +26,8 @@ class IsolateServer {
       Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, hs, data)], response.sendPort);      
       response.listen((data) {
         Map mapData = JSON.decode(data);
+        String contentType = mapData["CONTENT_TYPE"];
+        req.response.headers.set(IO.HttpHeaders.CONTENT_TYPE, contentType);
         if (mapData["REDIRECTION"] == "")
           req.response.write(mapData["DOM"]);
         else

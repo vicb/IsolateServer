@@ -7,6 +7,7 @@ class Core {
   Map             request;
   Map             userInfo;
   Map             serverInfo;
+  String          contentType = "text/html; charset=UTF-8";
 
   Core(List<String> args) {
     dom = new Dom();
@@ -23,11 +24,16 @@ class Core {
     }
   }
   
+  void setContentType(String type) {
+    contentType = type;
+  }
+  
   String toString() {
     Map rtc = new Map<String, dynamic>();
     rtc["DOM"] = dom.toString();
     rtc["REDIRECTION"] = redir.toString(); 
     rtc["SESSION"] = session;
+    rtc["CONTENT_TYPE"] = contentType;
     return (JSON.encode(rtc));
   }
 }
