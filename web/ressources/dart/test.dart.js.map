@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sourceRoot": "",
-  "sources": ["/Applications/Dart/dart-sdk/lib/_internal/lib/js_primitives.dart","test.dart","/Applications/Dart/dart-sdk/lib/_internal/lib/internal_patch.dart"],
-  "names": ["printString"],
-  "mappings": "A;A,yC;A,kE;A,6D;A,sE;A,8D;A,uE;A,qD;A;A,kB;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;;A;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A;A,2B,uB,A,A,E,C,E,C;A,E,E,C,C,E,C;A,E,W,C,CAoBA;;;AAII;;;;AAOA;;;AAKA;;;AAMA;;;GAOJ,A;A,C,A;A,K,a,A,A,E,C,E,C;A,E,E,C,C,E,C;A,E,I,C,CC/CA;ICUEA;GDRF,A;A,C;C;A;A,uB;A,yB;A,uB;A,C,C,uB,C,C,C,C;A,C,C,+B,C,C,C,I;A,C,C,mC,C,C,C,I;A,C,C,W,C,C,C,I;A;A,I,C,e,C,C,C,C,C,C;A;iB;A;A;A;A;;;;A;;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A;A,uB;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A,qB;A;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;A"
-}
