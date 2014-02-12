@@ -8,8 +8,11 @@ part 'src/serverdata.dart';
 
 class IsolateServer {
   IO.HttpServer           hs;
+  Map                     wsRoad;
   
-  IsolateServer(IO.HttpServer this.hs);
+  IsolateServer(IO.HttpServer this.hs) {
+    wsRoad = new Map<String, Function>();
+  }
   
   void _stopAndPrintStopwatch(Stopwatch sw, IO.HttpRequest req) {
     sw.stop();
@@ -67,7 +70,12 @@ class IsolateServer {
   void _getData(IO.HttpRequest req, String data, Stopwatch sw) {
     String pathFile = this._getPathFile(req);
     IO.File file = new IO.File(pathFile);
-    if (file.existsSync())
+    if (wsRoad.containsKey(req.uri.path)) { 
+      IO.WebSocketTransformer.upgrade(req).then((IO.WebSocket ws) {
+        wsRoad[req.uri.path](ws, req);
+      });
+    }
+    else if (file.existsSync())
       this._fileExist(req, file, sw, data);
     else
       this._fileNotExist(req, sw, data);
