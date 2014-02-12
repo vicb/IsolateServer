@@ -1,4 +1,9 @@
-name: IsolateServer
+name: isolateserver
+version: 0.0.1
+author: Segaud Kevin <segaud.kevin@gmail.com>
 description: A sample command-line application
+homepage: https://github.com/Kleak/IsolateServer
+environment:
+  sdk: '>=1.2.0-dev.4.0'
 dependencies:
   browser: any
