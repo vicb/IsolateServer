@@ -9,12 +9,7 @@ part 'src/serverdata.dart';
 class IsolateServer {
   IO.HttpServer           hs;
   
-  IsolateServer(IO.HttpServer this.hs) {
-    IO.Directory dataDir = new IO.Directory("data/");
-    dataDir.list().listen((IO.FileSystemEntity fse) {
-      fse.deleteSync(recursive: true);
-    });
-  }
+  IsolateServer(IO.HttpServer this.hs);
   
   void _stopAndPrintStopwatch(Stopwatch sw, IO.HttpRequest req) {
     sw.stop();
@@ -80,12 +75,15 @@ class IsolateServer {
   
   String _getPathFile(IO.HttpRequest req) {
     String pathFile = "web";
-    if (req.uri.path.endsWith("/"))
-      pathFile += req.uri.path + "server/" + "index.dart";
-    else if (!req.uri.path.contains("/client/"))
-      pathFile += "/server" + req.uri.path; 
-    else
-      pathFile += req.uri.path;
+    bool isClient = req.uri.path.contains("/client");
+    if (req.uri.path.endsWith("/") && !isClient)
+      pathFile += req.uri.path + "index.dart";
+    else {
+      if (isClient)
+        pathFile += req.uri.path.substring(7, req.uri.path.length);
+      else
+        pathFile += req.uri.path;
+    }
     return (pathFile);
   }
   
