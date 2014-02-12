@@ -18,7 +18,7 @@ class IsolateServer {
   
   void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, String data) {
     try {
-      ServerData serverData = new ServerData(req.session.id, req);
+      ServerData serverData = new ServerData(req.session.id, req, this.hs);
       ReceivePort response = new ReceivePort();
       Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, hs, data)], response.sendPort);      
       response.listen((data) {

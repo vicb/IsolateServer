@@ -5,23 +5,28 @@ class ServerData {
   
   static final Map<String, ServerData> cache = new Map<String, ServerData>();
   
-  factory ServerData(String id, IO.HttpRequest req) {
+  factory ServerData(String id, IO.HttpRequest req, IO.HttpServer hs) {
     if (cache.containsKey(id))
       return (cache[id]);
     else {
-      final ServerData serverData = new ServerData.internal(req);    
+      final ServerData serverData = new ServerData.internal(req, hs);    
       cache[id] = serverData;
       return (serverData);
     }
   }
   
-  ServerData.internal(IO.HttpRequest req) {
+  ServerData.internal(IO.HttpRequest req, IO.HttpServer hs) {
     dataTmpFile = new Map<String, dynamic>();
     Map userInfo = new Map<dynamic, dynamic>();
     userInfo["REMOTE_ADDRESS"] = req.connectionInfo.remoteAddress.address;
     userInfo["REMOTE_PORT"] = req.connectionInfo.remotePort;
     userInfo["LOCAL_PORT"] = req.connectionInfo.localPort;
     dataTmpFile["USER_INFO"] = userInfo;
+    
+    Map serverInfo = new Map<String, dynamic>();
+    serverInfo["ADDRESS"] = hs.address.address;
+    serverInfo["PORT"] = hs.port;
+    dataTmpFile["SERVER_INFO"] = serverInfo;
     
     Map session = new Map<dynamic, dynamic>();
     session["id"] = req.session.id;
@@ -37,6 +42,9 @@ class ServerData {
       session[key] = value;
     });
     
+    Map userInfo = dataTmpFile["USER_INFO"];
+    userInfo[IO.HttpHeaders.REFERER] = req.headers[IO.HttpHeaders.REFERER];
+
     Map requestInfo = dataTmpFile["REQUEST"];
     requestInfo["TYPE"] = req.method;
     Map queryParameter = new Map<String, String>();

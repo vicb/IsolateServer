@@ -6,6 +6,7 @@ class Core {
   Map             session;
   Map             request;
   Map             userInfo;
+  Map             serverInfo;
 
   Core(List<String> args) {
     dom = new Dom();
@@ -15,6 +16,7 @@ class Core {
       session = data["SESSION"];
       request = data["REQUEST"];
       userInfo = data["USER_INFO"];
+      serverInfo = data["SERVER_INFO"];
     }
     catch (e) {
       print("Erreur: ${e}");
