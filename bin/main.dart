@@ -3,7 +3,7 @@ import 'dart:io' as IO;
 import 'package:IsolateServer/IsolateServer/isolateserver.dart';
 
 void main() {
-  String address = "10.12.181.76";
+  String address = IO.InternetAddress.LOOPBACK_IP_V4.address;
   int port = 8888;
   
   IO.HttpServer.bind(address, port).then((IO.HttpServer hs) {
