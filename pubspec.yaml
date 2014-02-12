@@ -1,7 +1,9 @@
 name: isolateserver
-version: 0.0.1
+version: 0.0.2
 author: Segaud Kevin <segaud.kevin@gmail.com>
-description: A sample command-line application
+description: |-
+  Dart server who serves file through isolate.
+  This allow to change contents without reload server
 homepage: https://github.com/Kleak/IsolateServer
 environment:
   sdk: '>=1.2.0-dev.4.0'
