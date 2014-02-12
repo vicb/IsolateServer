@@ -21,7 +21,10 @@ class Dom {
   
   void addScriptToHead(String src, String type) {
     Element script = new Element.tag('script');
-    script["src"] = src;
+    if (src.endsWith(".dart"))
+      script["src"] = "/client" + src;
+    else
+      script["src"] = src;
     script["type"] = type;
     head.appendChild(script);
   }
