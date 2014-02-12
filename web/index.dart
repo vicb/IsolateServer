@@ -6,7 +6,7 @@ void main(List<String> args, SendPort replyTo) {
   Core rtc = new Core(args);
   
   rtc.dom.setTitle("Test IsolateServer");
-  rtc.dom.addStyleSheetToHead('/client/ressources/css/main.css');
+  rtc.dom.addStyleSheetToHead('/client/resources/css/main.css');
   
   Element containerHelloWorld = new Element.tag('div');
   containerHelloWorld["id"] = "containerhelloworld";
@@ -29,7 +29,7 @@ void main(List<String> args, SendPort replyTo) {
   rtc.dom.appendToBody(containerText);
   
   Element scriptMain = new Element.tag('script');
-  scriptMain["src"] = '/client/ressources/dart/test.dart';
+  scriptMain["src"] = '/client/resources/dart/test.dart';
   scriptMain["type"] = 'application/dart';
   rtc.dom.appendToBody(scriptMain);  
   Element scriptDart = new Element.tag('script');
