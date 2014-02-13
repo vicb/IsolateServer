@@ -1,1 +1,8 @@
 .DS_Store
+**/build/**
+**/*.dart.js
+**/*.dart.js.deps
+**/*.dart.js.map
+**/*.dart.precompiled.js
+.project
+packages
