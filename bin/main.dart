@@ -8,12 +8,14 @@ void main() {
   
   IO.HttpServer.bind(address, port).then((IO.HttpServer hs) {
     IsolateServer isoServer = new IsolateServer(hs);
+    
     isoServer.wsRoad["/ws/"] = (IO.WebSocket ws, IO.HttpRequest req) {
       print("new WebSocket !");
       ws.listen((data) {
         ws.add("Hello from Server !");
       });
     };
+    
     isoServer.listen();
   });
 }

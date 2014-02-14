@@ -7,11 +7,19 @@ import 'dart:convert';
 part 'src/serverdata.dart';
 
 class IsolateServer {
-  IO.HttpServer           hs;
+  IO.HttpServer           _hs;
   Map                     wsRoad;
+  Map                     _contentType;
   
-  IsolateServer(IO.HttpServer this.hs) {
+  IsolateServer(IO.HttpServer this._hs) {
     wsRoad = new Map<String, Function>();
+    _contentType = new Map<String, String>();
+    IO.File cT = new IO.File("bin/configuration/ContentType");
+    cT.readAsLinesSync().forEach((String line) {
+      var tabData = line.split(" ");
+      if (tabData.length == 2)
+        _contentType[tabData[0]] = tabData[1];
+    });
   }
   
   void _stopAndPrintStopwatch(Stopwatch sw, IO.HttpRequest req) {
@@ -21,9 +29,9 @@ class IsolateServer {
   
   void _spawnDart(IO.HttpRequest req, String path, Stopwatch sw, String data) {
     try {
-      ServerData serverData = new ServerData(req.session.id, req, this.hs);
+      ServerData serverData = new ServerData(req.session.id, req, this._hs);
       ReceivePort response = new ReceivePort();
-      Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, hs, data)], response.sendPort);      
+      Isolate.spawnUri(Uri.parse("../" + path), [serverData.getServerData(req, _hs, data)], response.sendPort);      
       response.listen((data) {
         Map mapData = JSON.decode(data);
         String contentType = mapData["CONTENT_TYPE"];
@@ -47,11 +55,22 @@ class IsolateServer {
     }
   }
   
+  String _getContentType(String path) {
+    String content = "text/plain";
+    _contentType.forEach((String key, String value) {
+      if (path.endsWith(key))
+        content = value;
+    });
+    return (content);
+  }
+  
   void _fileExist(IO.HttpRequest req, IO.File file, Stopwatch sw, String data) {
     String pathFile = file.path;
     if (pathFile.endsWith(".dart"))
       this._spawnDart(req, pathFile, sw, data);
     else {
+      String contentType = _getContentType(pathFile);
+      req.response.headers.set(IO.HttpHeaders.CONTENT_TYPE, contentType);
       file.openRead().pipe(req.response).catchError((e) { print('error pipe!'); });
       this._stopAndPrintStopwatch(sw, req);
     }
@@ -98,7 +117,7 @@ class IsolateServer {
   }
   
   void listen() {
-    this.hs.listen((IO.HttpRequest req) {
+    this._hs.listen((IO.HttpRequest req) {
       Stopwatch sw = new Stopwatch();
       sw.start();
       UTF8.decodeStream(req).then((String data) {

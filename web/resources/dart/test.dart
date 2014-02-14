@@ -11,7 +11,7 @@ void initWebSocket([int retrySeconds = 2]) {
   var reconnectScheduled = false;
 
   outputMsg("Connecting to websocket");
-  ws = new WebSocket('ws://10.12.181.76:8888/ws/');
+  ws = new WebSocket('ws://127.0.0.1:8888/ws/');
 
   void scheduleReconnect() {
     if (!reconnectScheduled) {
