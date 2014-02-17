@@ -1,6 +1,6 @@
 import 'dart:io' as IO;
 
-import 'package:IsolateServer/IsolateServer/isolateserver.dart';
+import 'package:IsolateServer/Server/isolateserver.dart';
 
 void main() {
   String address = IO.InternetAddress.LOOPBACK_IP_V4.address;

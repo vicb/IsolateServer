@@ -14,7 +14,7 @@ class IsolateServer {
   IsolateServer(IO.HttpServer this._hs) {
     wsRoad = new Map<String, Function>();
     _contentType = new Map<String, String>();
-    IO.File cT = new IO.File("bin/configuration/ContentType");
+    IO.File cT = new IO.File("packages/isolateserver/Server/configuration/ContentType");
     cT.readAsLinesSync().forEach((String line) {
       var tabData = line.split(" ");
       if (tabData.length == 2)
